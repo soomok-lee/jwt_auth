@@ -82,9 +82,9 @@ public class JwtProviderImpl implements JwtProvider {
 		final Claims claims = getAllClaimsFromToken(token);
 		Date iat = claims.getIssuedAt();
 		
-//		if(iat == null || isTokenExpired(iat)) {
-//			return null;
-//		}
+		if(iat == null || isTokenExpired(iat)) {
+			return null;
+		}
 		
 		return claims;
 	}
