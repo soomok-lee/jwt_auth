@@ -32,7 +32,7 @@ public class JwtProviderImpl implements JwtProvider {
 	public String getNameFromToken(String token) {
 		Claims claims = getAllClaimsFromToken(token);
 		
-		return claims.get("name").toString();
+		return claims.get(JwtConst.NAME).toString();
 	}
 	
 	@Override
@@ -56,7 +56,7 @@ public class JwtProviderImpl implements JwtProvider {
 	}
 	
 	private Boolean isTokenExpired(Date iat) {
-		return !new Date().before(DateUtils.addSeconds(iat, 3600)); // iat+1hr 
+		return !new Date().before(DateUtils.addSeconds(iat, JwtConst.TTL_MINUTES));
 	}
 
 	private String getSigningKeyByIssuer(String issuer) {

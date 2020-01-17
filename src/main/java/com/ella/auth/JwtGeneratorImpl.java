@@ -21,10 +21,8 @@ public class JwtGeneratorImpl implements JwtGenerator{
 	}
 	
 	@Override
-	public String generateJWT(String id, String issuer, String subject, String roles, long ttlMillis) {
+	public String generateJWT(String id, String issuer, String subject, String roles) {
 		  
-		// ELLA https://developer.okta.com/blog/2018/10/31/jwts-with-java
-		
 		logger.debug("generating JWT");
 		
 	    //The JWT signature algorithm we will be using to sign the token
@@ -44,11 +42,9 @@ public class JwtGeneratorImpl implements JwtGenerator{
 	            .signWith(signatureAlgorithm, signingKey);
 	  
 		// if it has been specified, let's add the expiration
-		if (ttlMillis > 0) {
-			long expMillis = nowMillis + ttlMillis;
-			Date exp = new Date(expMillis);
-			builder.setExpiration(exp);
-		}
+		long expMillis = nowMillis + JwtConst.TTL_MILLIS;
+		Date exp = new Date(expMillis);
+		builder.setExpiration(exp);
 	    
 	    //Builds the JWT and serializes it to a compact, URL-safe string
 	    return builder.compact();
