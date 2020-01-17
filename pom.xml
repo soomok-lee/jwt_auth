@@ -3,21 +3,50 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.2.2.RELEASE</version>
-		<relativePath /> <!-- lookup parent from repository -->
-	</parent>
+
 	<groupId>com.ella</groupId>
 	<artifactId>jwtAuth</artifactId>
 	<version>1.0.0</version>
+	<packaging>jar</packaging>
+	
 	<name>ella_auth</name>
 	<description>ella auth project for Spring Boot</description>
-
+	<url>https://github.com/ella-lee/jwtAuth.git</url>
+	<inceptionYear>2020</inceptionYear>
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>Ella Lee</name>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<organization>ella for me</organization>
+		</developer>
+	</developers>
+	
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>2.1.2.RELEASE</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 		<!-- Web -->
