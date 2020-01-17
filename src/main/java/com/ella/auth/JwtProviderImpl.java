@@ -39,7 +39,7 @@ public class JwtProviderImpl implements JwtProvider {
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
-    
+	
     private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
@@ -59,14 +59,27 @@ public class JwtProviderImpl implements JwtProvider {
 		return !new Date().before(DateUtils.addSeconds(iat, 3600)); // iat+1hr 
 	}
 
+	private String getSigningKeyByIssuer(String issuer) {
+		return jwtConst.getSigningKey(issuer);
+	}
+	
 	@Override
-	public Claims getClaimsFromToken(String token) {
+	public Claims getClaimsFromValidatedToken(String token) {
 		
-		String signingKey = jwtConst.getSigningKey();
+		String signingKey = getSigningKeyByIssuer(getClaimFromToken(token, Claims::getIssuer));
 
 		try {
 			byte[] decodedKey = Base64.getDecoder().decode(signingKey);
 			Jwts.parser().setSigningKey(decodedKey).parseClaimsJws(token).getBody(); // Signing key validation
+			
+			final Claims claims = getAllClaimsFromToken(token);
+			Date iat = claims.getIssuedAt();
+			
+			if(iat == null || isTokenExpired(iat)) {
+				return null;
+			}
+			
+			return claims;
 		} catch (SignatureException ex) {
 			logger.error("Invalid JWT signature");
 		} catch (MalformedJwtException ex) {
@@ -79,14 +92,7 @@ public class JwtProviderImpl implements JwtProvider {
 			logger.error("JWT claims string is empty.");
 		}
 		
-		final Claims claims = getAllClaimsFromToken(token);
-		Date iat = claims.getIssuedAt();
-		
-		if(iat == null || isTokenExpired(iat)) {
-			return null;
-		}
-		
-		return claims;
+		return null;
 	}
 
 }

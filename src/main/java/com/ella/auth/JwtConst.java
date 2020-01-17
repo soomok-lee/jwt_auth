@@ -10,5 +10,5 @@ public interface JwtConst {
     public static final String NAME = "name";
     public static final String AUTHORITIES_KEY = "roles";
 
-    public String getSigningKey();
+    public String getSigningKey(String issuer);
 }

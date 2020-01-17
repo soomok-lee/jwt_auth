@@ -46,7 +46,7 @@ public class JwtValidationFilter extends OncePerRequestFilter {
 		}
 
 		if (token != null) {
-			Claims claims = jwtProvider.getClaimsFromToken(token);
+			Claims claims = jwtProvider.getClaimsFromValidatedToken(token);
 
 			if (claims != null) {
 				logger.info("token validation completed");

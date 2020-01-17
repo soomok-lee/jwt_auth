@@ -10,8 +10,8 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ella</groupId>
-	<artifactId>auth</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>jwtAuth</artifactId>
+	<version>1.0.0</version>
 	<name>ella_auth</name>
 	<description>ella auth project for Spring Boot</description>
 
