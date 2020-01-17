@@ -1,2 +1,2 @@
-# ella_jwtAuth
+# jwtAuth
 
