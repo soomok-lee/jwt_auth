@@ -55,8 +55,8 @@ public class JwtProviderImpl implements JwtProvider {
 		return claims;
 	}
 	
-	private Boolean isTokenExpired(Date iat) {
-		return !new Date().before(DateUtils.addSeconds(iat, JwtConst.TTL_MINUTES));
+	private Boolean isTokenExpired(Date exp) {
+		return !new Date().before(exp);
 	}
 
 	private String getSigningKeyByIssuer(String issuer) {
@@ -73,10 +73,13 @@ public class JwtProviderImpl implements JwtProvider {
 			Jwts.parser().setSigningKey(decodedKey).parseClaimsJws(token).getBody(); // Signing key validation
 			
 			final Claims claims = getAllClaimsFromToken(token);
+			Date exp = claims.getExpiration();
 			Date iat = claims.getIssuedAt();
 			
-			if(iat == null || isTokenExpired(iat)) {
-				return null;
+			//when exp exist then exp check, when no exp ant iat exist then iat + ttl check
+			if ((exp != null && isTokenExpired(exp))
+				|| (iat != null && isTokenExpired(DateUtils.addSeconds(iat, JwtConst.TTL_MINUTES)))) {
+				throw new ExpiredJwtException(null, claims, "expired");
 			}
 			
 			return claims;
