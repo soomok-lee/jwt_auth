@@ -4,6 +4,7 @@
   mvn install:install-file -Dfile=jwtAuth-0.0.3.jar -DpomFile=jwtAuth-0.0.3.pom
   
 To use Maven, add the following lines to your pom.xml file:
+
   <project>
     <dependencies>
       <dependency>
@@ -13,3 +14,4 @@ To use Maven, add the following lines to your pom.xml file:
       </dependency>
     </dependencies>
   </project>
+  
