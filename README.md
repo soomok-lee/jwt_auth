@@ -1,4 +1,6 @@
 # jwtAuth
+jwt validation
+jwt authentication
 
 ## Installation
 
