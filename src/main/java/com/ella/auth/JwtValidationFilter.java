@@ -16,51 +16,56 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.impl.DefaultHeader;
 
 public class JwtValidationFilter extends OncePerRequestFilter {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private JwtClaims jwtClaims;
-	private JwtProvider jwtProvider;
+	private JwtValidator jwtValidator;
 
-	public JwtValidationFilter(JwtClaims jwtClaims, JwtProvider jwtProvider) {
+	public JwtValidationFilter(JwtClaims jwtClaims, JwtValidator jwtValidator) {
 		super();
 		this.jwtClaims = jwtClaims;
-		this.jwtProvider = jwtProvider;
+		this.jwtValidator = jwtValidator;
 	}
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
 			throws ServletException, IOException {
 
-		String header = req.getHeader(SHD_TOKEN_KEY);
+		String headerAuth = req.getHeader(SHD_TOKEN_KEY);
 		String token = null;
 
-		if (header.startsWith(TOKEN_PREFIX)) {
-			token = header.replace(TOKEN_PREFIX, "");
-		} else if (header.startsWith(BEARER_PREFIX)) {
-			token = header.replace(BEARER_PREFIX, "");
+		if (headerAuth.startsWith(TOKEN_PREFIX)) {
+			token = headerAuth.replace(TOKEN_PREFIX, "");
+		} else if (headerAuth.startsWith(BEARER_PREFIX)) {
+			token = headerAuth.replace(BEARER_PREFIX, "");
 		} else {
 			logger.warn("couldn't find token string");
 		}
 
 		if (token != null) {
-			Claims claims = jwtProvider.getClaimsFromValidatedToken(token);
-
-			if (claims != null) {
+			
+			if(jwtValidator.validateToken(token)) {
 				logger.info("token validation completed");
 
+				DefaultHeader<?> headerClaims = jwtValidator.getHeaderClaimsFromToken(token);
+				Claims bodyClaims = jwtValidator.getBodyClaimsFromToken(token);
+				
 				try {
-					this.jwtClaims.setClaims(claims);
+					this.jwtClaims.setHeaderClaims(headerClaims);
+					this.jwtClaims.setBodyClaims(bodyClaims);
+					
 					chain.doFilter(req, res);
 				} finally {
-					this.jwtClaims.getClaims().clear();
+					this.jwtClaims.getHeaderClaims().clear();
+					this.jwtClaims.getBodyClaims().clear();
 				}
 
 			} else {
 				logger.info("token validation failed");
-
 			}
 
 		}

@@ -9,8 +9,7 @@ public interface JwtConst {
     public static final String ID = "id";
     public static final String NAME = "name";
     public static final String AUTHORITIES_KEY = "roles";
-    public static final int TTL_MINUTES = 3600;
-    public static final long TTL_MILLIS = 3600*1000;
 
-    public String getSigningKey(String issuer);
+    public int getIatTTLSeconds(); //FIXME
+    public String getSigningKey(String issuer); //FIXME
 }

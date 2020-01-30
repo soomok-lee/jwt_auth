@@ -16,51 +16,54 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.impl.DefaultHeader;
 
 public class JwtValidationCustomFilter extends OncePerRequestFilter {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private JwtProvider jwtProvider;
+	private JwtValidator jwtValidator;
 
-	public JwtValidationCustomFilter(JwtProvider jwtProvider) {
+	public JwtValidationCustomFilter(JwtValidator jwtValidator) {
 		super();
-		this.jwtProvider = jwtProvider;
+		this.jwtValidator = jwtValidator;
 	}
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
 			throws ServletException, IOException {
 
-		String header = req.getHeader(SHD_TOKEN_KEY);
+		String headerAuth = req.getHeader(SHD_TOKEN_KEY);
 		String token = null;
 
 		// get token
-		if (header != null && header.startsWith(TOKEN_PREFIX)) {
-			token = header.replace(TOKEN_PREFIX, "");
-		} else if (header != null && header.startsWith(BEARER_PREFIX)) {
-			token = header.replace(BEARER_PREFIX, "");
-		}  else if (header != null && header.startsWith(getMyTokenPrefix())) {
-			token = header.replace(getMyTokenPrefix(), "");
+		if (headerAuth != null && headerAuth.startsWith(TOKEN_PREFIX)) {
+			token = headerAuth.replace(TOKEN_PREFIX, "");
+		} else if (headerAuth != null && headerAuth.startsWith(BEARER_PREFIX)) {
+			token = headerAuth.replace(BEARER_PREFIX, "");
+		} else if (headerAuth != null && headerAuth.startsWith(getMyTokenPrefix())) { 
+			token = headerAuth.replace(getMyTokenPrefix(), ""); //FIXME  headerAuth.replace 로직 변경 필요
 		} else {
 			logger.warn("couldn't find token string");
 		}
 
 		// validate token
 		while (token != null) {
-			Claims claims = jwtProvider.getClaimsFromValidatedToken(token);
 			
-			if (claims != null) {
+			if(jwtValidator.validateToken(token)) {
 				logger.info("token validation completed");
+
+				DefaultHeader<?> headerClaims = jwtValidator.getHeaderClaimsFromToken(token);
+				Claims bodyClaims = jwtValidator.getBodyClaimsFromToken(token);
 				
-				customMethod(claims);
+				doFilterInternalExtra(headerClaims, bodyClaims);
 			} else {
 				logger.info("token validation failed");
 			}
 
 			break;
 		}
-		
+
 		chain.doFilter(req, res);
 	}
 
@@ -68,10 +71,10 @@ public class JwtValidationCustomFilter extends OncePerRequestFilter {
 	protected String getMyTokenPrefix() {
 		return "please add myTokenPrefix";
 	}
-		
+
 	// ELLA Custom method
-	protected void customMethod(Claims claims) {
-		System.out.println("customMethod");
+	protected void doFilterInternalExtra(DefaultHeader<?> headerClaims, Claims bodyClaims) {
+		System.out.println("doFilterInternalExtra");
 	}
 
 }

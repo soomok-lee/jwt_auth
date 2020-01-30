@@ -1,17 +1,25 @@
 package com.ella.auth;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.impl.DefaultHeader;
 
 public class JwtClaims {
-
-	public Claims claims;
-
-	public Claims getClaims() {
-		return claims;
+	
+	public DefaultHeader<?> headerClaims;
+	public Claims bodyClaims;
+	
+	public DefaultHeader<?> getHeaderClaims() {
+		return headerClaims;
 	}
-
-	public void setClaims(Claims claims) {
-		this.claims = claims;
+	public void setHeaderClaims(DefaultHeader<?> headerClaims) {
+		this.headerClaims = headerClaims;
 	}
 	
+	public Claims getBodyClaims() {
+		return bodyClaims;
+	}
+	public void setBodyClaims(Claims bodyClaims) {
+		this.bodyClaims = bodyClaims;
+	}
+
 }
