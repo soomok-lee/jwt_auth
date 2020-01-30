@@ -10,6 +10,12 @@ public interface JwtConst {
     public static final String NAME = "name";
     public static final String AUTHORITIES_KEY = "roles";
 
-    public int getIatTTLSeconds(); //FIXME
-    public String getSigningKey(String issuer); //FIXME
+    default public int getIatTTLSeconds() { //FIXME 일단 default method로 처리 
+    	return 3600;
+    };
+    
+    default public String getSigningKey(String issuer) { //FIXME 일단 default method로 처리 
+    	return "set your signingKey";
+    }; 
+    
 }
