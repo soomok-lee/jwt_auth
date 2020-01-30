@@ -40,6 +40,8 @@ public class JwtValidationCustomFilter extends OncePerRequestFilter {
 			token = header.replace(TOKEN_PREFIX, "");
 		} else if (header != null && header.startsWith(BEARER_PREFIX)) {
 			token = header.replace(BEARER_PREFIX, "");
+		}  else if (header != null && header.startsWith(getMyTokenPrefix())) {
+			token = header.replace(getMyTokenPrefix(), "");
 		} else {
 			logger.warn("couldn't find token string");
 		}
@@ -62,6 +64,11 @@ public class JwtValidationCustomFilter extends OncePerRequestFilter {
 		chain.doFilter(req, res);
 	}
 
+	// ELLA Custom prefix
+	protected String getMyTokenPrefix() {
+		return "please add myTokenPrefix";
+	}
+		
 	// ELLA Custom method
 	protected void customMethod(Claims claims) {
 		System.out.println("customMethod");
