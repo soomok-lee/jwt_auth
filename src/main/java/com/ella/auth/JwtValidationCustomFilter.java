@@ -71,7 +71,7 @@ public class JwtValidationCustomFilter extends OncePerRequestFilter {
 		chain.doFilter(req, res);
 	}
 
-	// ELLA Custom prefix
+	// ELLA Custom headerAuthName
 	protected String getMyHeaderAuthName() {
 		return "myTokenPrefix";
 	}
