@@ -73,7 +73,7 @@ public class JwtValidationCustomFilter extends OncePerRequestFilter {
 
 	// ELLA Custom headerAuthName
 	protected String getMyHeaderAuthName() {
-		return "myTokenPrefix";
+		return "myHeaderAuthName";
 	}
 		
 	// ELLA Custom prefix
