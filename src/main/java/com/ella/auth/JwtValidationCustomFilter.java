@@ -33,29 +33,33 @@ public class JwtValidationCustomFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
 			throws ServletException, IOException {
 
-		String headerAuth = req.getHeader(SHD_TOKEN_KEY);
+		String headerAuth = null;
 		String token = null;
-
-		// get token
-		if (headerAuth != null && headerAuth.startsWith(TOKEN_PREFIX)) {
-			token = headerAuth.replace(TOKEN_PREFIX, "");
-		} else if (headerAuth != null && headerAuth.startsWith(BEARER_PREFIX)) {
-			token = headerAuth.replace(BEARER_PREFIX, "");
-		} else if (headerAuth != null && headerAuth.startsWith(getMyTokenPrefix())) { 
-			token = headerAuth.replace(getMyTokenPrefix(), ""); //FIXME  headerAuth.replace 로직 변경 필요
+		
+		headerAuth = req.getHeader(getMyHeaderAuthName());
+		
+		if (headerAuth != null) {
+			String[] headerAuthParts = headerAuth.split(" ");
+			if (headerAuthParts.length == 1) {
+				token = headerAuthParts[0];
+			} else if (headerAuthParts.length == 2 && (headerAuth.startsWith(TOKEN_PREFIX) || headerAuth.startsWith(BEARER_PREFIX) || headerAuth.startsWith(getMyTokenPrefix()))) {
+				token = headerAuthParts[1];
+			} else {
+				logger.warn("headerAuth structure is not right");
+			}
 		} else {
-			logger.warn("couldn't find token string");
+			logger.warn("couldn't find headerAuth");
 		}
 
 		// validate token
 		while (token != null) {
-			
-			if(jwtValidator.validateToken(token)) {
+
+			if (jwtValidator.validateToken(token)) {
 				logger.info("token validation completed");
 
 				DefaultHeader<?> headerClaims = jwtValidator.getHeaderClaimsFromToken(token);
 				Claims bodyClaims = jwtValidator.getBodyClaimsFromToken(token);
-				
+
 				doFilterInternalExtra(headerClaims, bodyClaims);
 			} else {
 				logger.info("token validation failed");
@@ -68,8 +72,13 @@ public class JwtValidationCustomFilter extends OncePerRequestFilter {
 	}
 
 	// ELLA Custom prefix
+	protected String getMyHeaderAuthName() {
+		return "myTokenPrefix";
+	}
+		
+	// ELLA Custom prefix
 	protected String getMyTokenPrefix() {
-		return "please add myTokenPrefix";
+		return "myTokenPrefix";
 	}
 
 	// ELLA Custom method

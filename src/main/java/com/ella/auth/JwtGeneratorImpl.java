@@ -2,6 +2,7 @@ package com.ella.auth;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -57,7 +58,7 @@ public class JwtGeneratorImpl implements JwtGenerator{
 	}
 	
 	@Override
-	public String generateJWTWithKey(String issuer, String subject, Long expMillis, Map<String, String> claims, String signingKey) {
+	public String generateJWTWithKey(String issuer, String subject, Long expMillis, Map<String, Object> claims, String signingKey) {
 		  
 		logger.debug("generating JWT");
 		
@@ -73,7 +74,7 @@ public class JwtGeneratorImpl implements JwtGenerator{
 			.setIssuer(issuer);
 		
 		// ELLA claim(JwtConst.AUTHORITIES_KEY, roles) FOREACH
-		for (Map.Entry<String, String> entry : claims.entrySet()) {
+		for (Entry<String, Object> entry : claims.entrySet()) {
 			jwtBuilder.claim(entry.getKey(), entry.getValue());
 		}
 		

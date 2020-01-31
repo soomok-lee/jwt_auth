@@ -38,14 +38,17 @@ public class JwtValidationFilter extends OncePerRequestFilter {
 		String headerAuth = req.getHeader(SHD_TOKEN_KEY);
 		String token = null;
 
-		if (headerAuth.startsWith(TOKEN_PREFIX)) {
-			token = headerAuth.replace(TOKEN_PREFIX, "");
-		} else if (headerAuth.startsWith(BEARER_PREFIX)) {
-			token = headerAuth.replace(BEARER_PREFIX, "");
+		if (headerAuth != null) {
+			String[] headerAuthParts = headerAuth.split(" ");
+			if (headerAuthParts.length == 2 && (headerAuth.startsWith(TOKEN_PREFIX) || headerAuth.startsWith(BEARER_PREFIX))) {
+				token = headerAuthParts[1];
+			} else {
+				logger.warn("headerAuth structure is not right");
+			}
 		} else {
-			logger.warn("couldn't find token string");
+			logger.warn("couldn't find headerAuth");
 		}
-
+		
 		if (token != null) {
 			
 			if(jwtValidator.validateToken(token)) {
