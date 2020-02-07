@@ -93,7 +93,6 @@ public class JwtValidatorImpl implements JwtValidator {
 			Date iat = claims.getIssuedAt();
 
 			// when exp exist then exp check, when no exp ant iat exist then iat + ttl check
-			boolean a = isTokenExpired(exp);
 			if(exp != null) {
 				if(isTokenExpired(exp)) {
 					throw new ExpiredJwtException(null, claims, "exp expired : " + exp);
