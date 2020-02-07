@@ -93,23 +93,31 @@ public class JwtValidatorImpl implements JwtValidator {
 			Date iat = claims.getIssuedAt();
 
 			// when exp exist then exp check, when no exp ant iat exist then iat + ttl check
-			if (exp != null && isTokenExpired(exp)) {
-				throw new ExpiredJwtException(null, claims, "exp expired");
-			} else if (iat != null && isTokenExpired(DateUtils.addSeconds(iat, jwtConst.getIatTTLSeconds()))) {
-				throw new ExpiredJwtException(null, claims, "iat expired");
+			boolean a = isTokenExpired(exp);
+			if(exp != null) {
+				if(isTokenExpired(exp)) {
+					throw new ExpiredJwtException(null, claims, "exp expired : " + exp);
+				} 
+					return true;
+			} else if (iat != null) {
+				if(isTokenExpired(DateUtils.addSeconds(iat, jwtConst.getIatTTLSeconds()))) {
+					throw new ExpiredJwtException(null, claims, "iat expired : " + iat);
+				} 
+				return true;
+			} else {
+				throw new ExpiredJwtException(null, claims, "exp/iat not exists");
 			}
-
-			return true;
+			
 		} catch (SignatureException ex) {
-			logger.error("Invalid JWT signature");
+			logger.error("Invalid JWT signature", ex);
 		} catch (MalformedJwtException ex) {
-			logger.error("Invalid JWT token");
+			logger.error("Invalid JWT token", ex);
 		} catch (ExpiredJwtException ex) {
-			logger.error("Expired JWT token");
+			logger.error("Expired JWT token", ex);
 		} catch (UnsupportedJwtException ex) {
-			logger.error("Unsupported JWT token");
+			logger.error("Unsupported JWT token", ex);
 		} catch (IllegalArgumentException ex) {
-			logger.error("JWT claims string is empty.");
+			logger.error("JWT claims string is empty.", ex);
 		}
 
 		return false;
