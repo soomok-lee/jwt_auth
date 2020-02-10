@@ -42,7 +42,7 @@ public class JwtValidatorImpl implements JwtValidator {
 		return jwtConst.getSigningKey(issuer);
 	}
 
-	private Jwt<?, ?> getJwtFromToken(String token) {
+	private Jwt<?, ?> getJwtFromToken(String token){
 		String[] splitToken = token.split("\\.");
 		String unsignedToken = splitToken[0] + "." + splitToken[1] + ".";
 
@@ -64,7 +64,7 @@ public class JwtValidatorImpl implements JwtValidator {
 	public Claims getBodyClaimsFromToken(String token) { // without signingKey
 		Jwt<?, ?> jwt = getJwtFromToken(token);
 		Claims bodyClaims = (Claims) jwt.getBody();
-			
+		
 		return bodyClaims;
 	};
 	
@@ -82,9 +82,9 @@ public class JwtValidatorImpl implements JwtValidator {
 	@Override
 	public Boolean validateToken(String token) {
 
-		String signingKey = getSigningKeyByIssuer(getClaimFromToken(token, Claims::getIssuer));
-
 		try {
+			String signingKey = getSigningKeyByIssuer(getClaimFromToken(token, Claims::getIssuer));
+			
 			byte[] decodedKey = Base64.getDecoder().decode(signingKey);
 			Jwts.parser().setSigningKey(decodedKey).parseClaimsJws(token).getBody(); // Signing key validation
 
