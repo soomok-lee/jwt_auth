@@ -12,7 +12,7 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
-public class JwtGeneratorImpl implements JwtGenerator{
+public class JwtGeneratorImpl implements JwtGenerator {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass()); // log 생성한 class 지정
 
@@ -91,7 +91,7 @@ public class JwtGeneratorImpl implements JwtGenerator{
 	
 	private JwtBuilder getJwtBuilder(String signingKey) {
 		//The JWT signature algorithm we will be using to sign the token
-	    SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256; //FIXME 환경으로 빼기
+	    SignatureAlgorithm signatureAlgorithm = jwtConst.getSignatureAlgorithm();
 	    
 		JwtBuilder jwtBuilder = Jwts.builder()
 				.signWith(signatureAlgorithm, signingKey);
