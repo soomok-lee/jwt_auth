@@ -44,6 +44,12 @@ public class JwtValidatorImpl implements JwtValidator {
 
 	private Jwt<?, ?> getJwtFromToken(String token){
 		String[] splitToken = token.split("\\.");
+		
+		if (splitToken.length != 3) {
+            String msg = "JWT strings must contain exactly 2 period characters. Found: " + splitToken.length;
+            throw new MalformedJwtException(msg);
+		}
+		
 		String unsignedToken = splitToken[0] + "." + splitToken[1] + ".";
 
 		DefaultJwtParser parser = new DefaultJwtParser();

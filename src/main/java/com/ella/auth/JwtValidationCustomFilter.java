@@ -1,7 +1,6 @@
 package com.ella.auth;
 
 import static com.ella.auth.JwtConst.BEARER_PREFIX;
-import static com.ella.auth.JwtConst.SHD_TOKEN_KEY;
 import static com.ella.auth.JwtConst.TOKEN_PREFIX;
 
 import java.io.IOException;
