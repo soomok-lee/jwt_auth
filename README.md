@@ -1,4 +1,4 @@
-# jwtAuth
+# jwt_auth
 jwt validation
 jwt authentication
 
