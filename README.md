@@ -1,5 +1,5 @@
 # jwt_auth
-common module to use jwt
+common module to use JWT
 - jwt validation
 - jwt authentication
 
