@@ -1,6 +1,7 @@
 # jwt_auth
-jwt validation
-jwt authentication
+common module to use jwt
+- jwt validation
+- jwt authentication
 
 ## Installation
 
